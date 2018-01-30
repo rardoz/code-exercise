@@ -26,3 +26,4 @@ You will be making a game in React. Feel free to be creative. We have provided a
 * You may use `scss` or `css`
 * Must be responsive and mobile friendly
 * Shoud work in all modern web browsers
+* Must have a winner UI
