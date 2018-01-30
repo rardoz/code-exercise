@@ -1,7 +1,7 @@
 {
-  "name": "webpack-workshop",
+  "name": "zw-code-exercise",
   "version": "1.0.0",
-  "description": "A webpack workshop",
+  "description": "A react test",
   "main": "src/index.js",
   "scripts": {
     "test": "echo sorry no tests",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://rardoz@github.com/rardoz/webpack-workshop.git"
+    "url": "git+https://rardoz@github.com/rardoz/zw-code-exercise.git"
   },
   "keywords": [
     "Webpack"
@@ -19,9 +19,9 @@
   "author": "RARDOZ",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rardoz/webpack-workshop/issues"
+    "url": "https://github.com/rardoz/zw-code-exercise/issues"
   },
-  "homepage": "https://github.com/rardoz/webpack-workshop#readme",
+  "homepage": "https://github.com/rardoz/zw-code-exercise#readme",
   "dependencies": {
     "autoprefixer": "^7.2.2",
     "babel-eslint": "^8.0.3",
