@@ -1,6 +1,78 @@
-/* PUT STYLES HERE */
 
-svg {
-    width: 100px;
-    height: 100px;
+$color: blue;
+
+body {
+	overflow: hidden;
+}
+
+// .target svg ,
+.target
+{
+	fill: pink;
+	width: 100px;
+	height: 100px;
+	position: absolute;
+	animation:turn 3s linear infinite normal;
+//	border: black 1px solid;
+}
+
+.board {
+	background-color: darkgray;
+	color: $color;
+	font-size: larger;
+	font-weight: bold;
+
+	padding: 20px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+.board .title {
+	font-family: monospace;
+}
+
+.score {
+	display: block;
+}
+.score::before {
+	content: 'Score:';
+	padding-right: 5px;
+}
+
+.score .icon {
+	display: inline-block;
+	color: darken(gold,.15);
+	animation:turn 1s;
+}
+
+.winningBanner {
+	font-family: 'Helvetica',sans-serif;
+	font-size: 55pt;
+	font-weight: bold;
+	color: green;
+//	transform: translate(-500px,-300px) rotate(30deg);
+}
+
+.missed {
+	font-family: 'Helvetica',sans-serif;
+	color:red;
+	position: absolute;
+//	animation: fadeout 2s;
+}
+
+@keyframes turn{
+  0%{
+    transform:rotate(0deg);
+  }
+  100%{
+    transform:rotate(360deg);
+  }
+}
+
+@keyframes fadeout {
+	0% { opacity: 1 }
+	100% { opacity: 0 }
 }
