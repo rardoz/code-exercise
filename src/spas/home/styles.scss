@@ -1,11 +1,8 @@
 
-$color: blue;
-
-body {
+body { // No need for scroll bars
 	overflow: hidden;
 }
 
-// .target svg ,
 .target
 {
 	fill: pink;
@@ -16,9 +13,10 @@ body {
 //	border: black 1px solid;
 }
 
+// Game board (and some things it contains)
 .board {
 	background-color: darkgray;
-	color: $color;
+	color: blue;
 	font-size: larger;
 	font-weight: bold;
 
@@ -38,7 +36,7 @@ body {
 	display: block;
 }
 .score::before {
-	content: 'Score:';
+	content: 'Score:';		// Rather than hard-coding in code. FWIW
 	padding-right: 5px;
 }
 

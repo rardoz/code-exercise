@@ -43,7 +43,6 @@ class Target extends Component {
 	 * to place it.
 	 */
 	componentDidMount() {
-		console.log('didMount', this.parentNode);
 		if (!this.state.show) {
 			let rect=this.parentNode.getBoundingClientRect()
 			let crect=this.node.firstChild.getBoundingClientRect()
@@ -72,9 +71,14 @@ class Target extends Component {
 		this.setState(state => {
 //			console.log('child',crect);
 //			console.log('parent',prect);
+													// Move the target
 			state.x += this.vector.x
 			state.y += this.vector.y
 
+			// Check to see whether we moved (a little) out of bounds and
+			// limit the movement, if it has. Then adjust the movement direction
+			// vector so the target doesn't keep trying to move outside the
+			// boundary.
 			if (state.x < prect.x) {
 				state.x = prect.x
 				this.vector.x = -this.vector.x
@@ -94,17 +98,19 @@ class Target extends Component {
 			}
 			return state
 		})
-		if (this.moveCount--)
-			timeout(50).then(this.move)
+		if (this.moveCount--)				// In case moves are limited
+			timeout(50).then(this.move)	// Move, again, after a short pause.
 	}
 
 	componentWillUnmount() {
-		console.log('componentWillUnmount()');
 		this.moveCount = 0;
 	}
 
+	/**
+	 * Propagate "hits" to registered onClick function
+	 */
 	handleClick(e) {
-		console.log('target hit',e, e.persist(),e.nativeEvent);
+													// If listener is registered, call it.
 		if (typeof this.props.onClick == 'function') {
 			this.props.onClick.apply(null,arguments)
 //			e.preventDefault()
@@ -136,8 +142,7 @@ class Target extends Component {
  */
 function Score(props) {
 	let score = props.score ? props.score : 0
-	let beers = new Array(score).fill(11)
-//	beers = beers.map((i,idx) => (<span key={idx} className="icon icon-beer"/>))
+	let beers = new Array(score).fill(11)	// Create array so we can use map()
 
 	return (
 		<span className='score'>
@@ -162,12 +167,12 @@ function Score(props) {
  */
 class GameBoard extends Component {
 	constructor(props) {
-		console.log('Game construct');
 		super(props)
+									// What score is needed to win? Dft: 10
 		this.win = props.win ? props.win : 10
 		this.state = {
-			score: 0,
-			winner: false
+			score: 0,			// Game score
+			winner: false		// Did the player win?
 		}
 		this.onTargetClick = this.onTargetClick.bind(this)
 		this.onMissedClick = this.onMissedClick.bind(this)
@@ -185,17 +190,23 @@ class GameBoard extends Component {
 		 									state))
 //			timeout(1000).then(this.setState(state => (delete state.missed, state)))
 	 	}
-	}
+	} // onMissedClick()
+
 	/**
 	 * Handle "hits" reported by the target object. Increment the score
 	 */
 	onTargetClick(e) {
-		console.log('hit click');
-		this.setState(state => (state.score=Math.min(state.score+1, this.win),delete state.missed,
-		 state.winner=state.score >=this.win,
-		 state))
-	}
+		this.setState(
+			state => (state.score=Math.min(state.score+1, this.win),
+						 delete state.missed,
+		 			    state.winner=state.score >=this.win,
+		 			 	 state)
+		)
+	} // onTargetClick()
 
+	/**
+	 * Render the game board
+	 */
 	render() {
 		console.log('Game.render()',this.state);
 		if (this.state.winner) {
@@ -223,7 +234,7 @@ class GameBoard extends Component {
 				</div>
 			)
 		}
-	}
+	} // render()
 } // class GameBoard
 
 /**
@@ -237,7 +248,9 @@ function WinnerBanner(props) {
 	)
 } // WinnerBanner component
 
-
+/**
+ * A generic anchor, more or less.
+ */
 class HomeSPA extends Component {
     render(){
         return (
