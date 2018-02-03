@@ -1,6 +1,96 @@
-/* PUT STYLES HERE */
+html, 
+body {
+    margin: 0;
+    height: 100%;
+    user-select: none;
+}
 
-svg {
-    width: 100px;
-    height: 100px;
+#react-spa,
+.gameContainer,
+.winContainer {
+    height: 100%;
+}
+
+.gameContainer {
+    background: linear-gradient(to bottom, rgb(13, 158, 255), rgb(255,255,255));
+    
+    &:before,
+    &:after {
+        background: rgba(255,255,255,0.75);
+    }
+}
+
+.winContainer {
+    background: linear-gradient(to bottom, rgb(14, 4, 59), rgb(209, 9, 36), rgb(253, 165, 0));
+
+    h1 {
+        margin: 0;
+        padding-top: 10%;
+        color: #ffffff;
+        text-align: center;
+        font-family: "Raleway", "Helvetica", "Verdana", "Arial", sans-serif;
+        font-size: 50px;
+        font-weight: 100;
+        text-shadow: 0 2px 4px #000000;
+    }
+
+    &:before,
+    &:after {
+        background: rgba(255,255,255,0.8);
+        box-shadow: 0 3px 0 rgb(255, 82, 197);
+    }
+}
+
+.gameContainer,
+.winContainer {
+    &:before,
+    &:after {
+        content: "";
+        position: absolute;
+        display: block;
+        width: 60%;
+        height: 15%;
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    &:before {
+        left: 7%;
+        top: 20%;
+    }
+
+    &:after {
+        left: 60%;
+        top: 70%;
+    }
+}
+
+.targetElement {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    transition: 2s ease;
+    cursor: grab;
+    z-index: 2;
+
+    svg {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.scoreContainer {
+    display: flex;
+    padding: 2%;
+    justify-content: space-around;
+    z-index: 2;
+}
+
+.scoreIcon {
+    display: block;
+    padding: 3px;
+    width: 30px;
+    height: 30px;
+    background: #ffffff;
+    border-radius: 5px;
 }

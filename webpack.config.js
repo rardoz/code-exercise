@@ -7,7 +7,8 @@ const
     OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin'),
     path = require('path'),
     compiledFiles = './src/spas/**/index.js',
-    modules = { main: ['babel-polyfill', './src/index.js'] }
+    modules = { main: ['babel-polyfill', './src/index.js'] },
+    CopyFiles = require('copy-webpack-plugin')
 
 
 //code splitting
@@ -82,6 +83,7 @@ module.exports = {
       plugins: [
         new webpack.HotModuleReplacementPlugin(),
         new webpack.optimize.OccurrenceOrderPlugin(),
+        new CopyFiles([{from: 'src/spas/home/index.html', to: 'index.html'}]),
         new ExtractTextPlugin('[name]/styles.css'),
         new HappyPack({
           cacheContext: {
