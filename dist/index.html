@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script tyle="text/javascript">
+    if(window.location.href === 'http://localhost:8080' || window.location.href === 'http://localhost:8080/') window.location = '/home'
+    var styles = "<link rel='stylesheet' type='text/css' href='"+ window.location.href +"/styles.css'/>"
+    var script = '<script defer src="'+ window.location.href +'/index.js"><\/script>'
+    document.write(styles);
+    document.write(script)
+  </script>
+</head>
+<body>
+  <div id="react-spa"></div>
+</body>
+</html>

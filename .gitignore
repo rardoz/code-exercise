@@ -57,5 +57,7 @@ typings/
 # dotenv environment variables file
 .env
 
-dist/**
+dist/home
+dist/treeshake
+dist/main
 node_modules
