@@ -1,6 +1,28 @@
 /* PUT STYLES HERE */
-
-svg {
+body{
+    overflow: hidden;
+    background-color: #000;
+}
+svg.kitty {
     width: 100px;
     height: 100px;
+    position: relative;
+    fill: red;
+    animation: 1s linear infinite rainbow;
+}
+.icon {
+    color: green;
+}
+.winner {
+    color: green;
+    font-size: 36px;
+    width: 100%;
+    text-align: center;
+}
+@keyframes rainbow {
+    0% { fill: red }
+    25% { fill: yellow }
+    50% { fill: green }
+    75% { fill: blue }
+    100% { fill: red }
 }
