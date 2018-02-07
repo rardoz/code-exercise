@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, PureComponent} from 'react'
 import ReactDOM from 'react-dom'
 import './styles.scss'
 import GithubKitty from './github.svg'
@@ -26,13 +26,12 @@ function timeout(delay) {
 class Target extends Component {
 	constructor(props) {
 		super(props)
-		console.log('Target.props',props);
 
-		this.vector = {x:10, y:10}
-
+		this.vector = {x:10, y:10}				// Movement vector
 		this.state = {
-			show: false
+			show: false											// Has target been mounted in React?
 		}
+
 		this.handleClick = this.handleClick.bind(this)
 		this.move = this.move.bind(this)
 	} // constructor()
@@ -183,8 +182,9 @@ class GameBoard extends Component {
 	 * from the score.
 	 */
 	onMissedClick(e) {
-		console.log('missed click',e, e.persist(),e.nativeEvent);
+//		console.log('missed click',e, e.persist(),e.nativeEvent);
 		if (!this.state.winner) {
+			e.persist()
 			this.setState(state => (state.score=Math.max(state.score-1, 0),
 											state.missed = {x:e.nativeEvent.x, y:e.nativeEvent.y},
 		 									state))
@@ -208,7 +208,6 @@ class GameBoard extends Component {
 	 * Render the game board
 	 */
 	render() {
-		console.log('Game.render()',this.state);
 		if (this.state.winner) {
 			return (
 				<div className='board'>
@@ -223,8 +222,10 @@ class GameBoard extends Component {
 							: ''
 
 			let missed=''
-			if (this.state.missed)
-				missed=(<div key={this.state.missed} className='missed' style={{animation:'fadeout 2s', left:this.state.missed.x, top:this.state.missed.y}}>Missed!</div>)
+			if (this.state.missed) {
+//				missed=(<Missed x={this.state.missed.x} y={this.state.missed.y} />)
+				missed=(<div className='missed' style={{left:this.state.missed.x, top:this.state.missed.y}}>Missed!</div>)
+			}
 			return (
 				<div className='board' onClick={this.onMissedClick}>
 					{title}
@@ -236,6 +237,30 @@ class GameBoard extends Component {
 		}
 	} // render()
 } // class GameBoard
+
+class Missed extends PureComponent {
+
+	constructor(props) {
+		super(props)
+		console.log('<Missed>', this, props)
+	}
+
+	componentWillReceiveProps(props) {
+		console.log('componentWillReceiveProps', this.props, props, ReactDOM.findDOMNode(this));
+		let me = ReactDOM.findDOMNode(this)
+		console.log('styles',me.style, me.style.opacity);
+//		console.log('attributes',me.attributes);
+		me.style.animation = 'none'
+		console.log('styles',me.style, me.style.opacity);
+	}
+
+	render() {
+		console.log('render', this);
+		return (
+			<div className='missed' style={{left:this.props.x, top:this.props.y}}>Missed!!</div>
+		)
+	}
+}
 
 /**
  * Displays winner content. Content contained within the
@@ -251,7 +276,7 @@ function WinnerBanner(props) {
 /**
  * A generic anchor, more or less.
  */
-class HomeSPA extends Component {
+class HomeSPA extends PureComponent {
     render(){
         return (
             <div>
