@@ -26,6 +26,7 @@ module.exports = {
         filename: '[name]/index.js'
     },
     devServer: {
+      port: process.env.PORT,
         headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
@@ -128,7 +129,7 @@ module.exports = {
         })
       ]
     }
-    
+
     if (ENV === 'production') {
 
       module.exports.plugins.push(
