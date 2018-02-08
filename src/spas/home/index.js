@@ -24,10 +24,12 @@ function timeout(delay) {
  *        make before stopping.
  */
 class Target extends Component {
+
 	constructor(props) {
 		super(props)
 
-		this.vector = {x:10, y:10}				// Movement vector
+		this.vector = {x:50, y:50}				// Movement vector
+    this.timeSlice = 125              // Animation timeslice, in milliseconds
 		this.state = {
 			show: false											// Has target been mounted in React?
 		}
@@ -43,17 +45,17 @@ class Target extends Component {
 	 */
 	componentDidMount() {
 		if (!this.state.show) {
-			let rect=this.parentNode.getBoundingClientRect()
-			let crect=this.node.firstChild.getBoundingClientRect()
-			this.setState( {
+			const prect=this.parentNode.getBoundingClientRect()
+			const crect=this.node.firstChild.getBoundingClientRect()
+			this.setState({
 				show: true,
-				x:rect.x + rect.width/2 - crect.width/2,
-				y:rect.y + rect.height/2 - crect.height/2
+				x: prect.x + prect.width*Math.random() - crect.width/2,
+				y: prect.y + prect.height*Math.random() - crect.height/2
 			})
 		}
 		if (this.props.move !== 0) {
 			this.moveCount = Number.isInteger(this.props.move) ? this.props.move : -1
-			timeout(500).then(this.move)
+			this.move()
 		}
 	} // componentDidMount()
 
@@ -64,8 +66,8 @@ class Target extends Component {
 //		console.log('move',this.vector, this.state);
 		if ( ! this.parentNode || ! this.node.firstChild )
 			return;
-		let prect=this.parentNode.getBoundingClientRect()
-		let crect=this.node.firstChild.getBoundingClientRect()
+		const prect=this.parentNode.getBoundingClientRect()
+		const crect=this.node.firstChild.getBoundingClientRect()
 
 		this.setState(state => {
 //			console.log('child',crect);
@@ -98,7 +100,7 @@ class Target extends Component {
 			return state
 		})
 		if (this.moveCount--)				// In case moves are limited
-			timeout(50).then(this.move)	// Move, again, after a short pause.
+			timeout(this.timeSlice).then(this.move)	// Move, again, after a short pause.
 	}
 
 	componentWillUnmount() {
@@ -123,6 +125,7 @@ class Target extends Component {
 			<GithubKitty
 				className='target'
 				style={{
+          transition: this.timeSlice/1000+'s linear',
 					visibility: this.state.show ? 'visible' : 'hidden',
 					top: this.state.y,
 					left: this.state.x
@@ -217,14 +220,18 @@ class GameBoard extends Component {
 			)
 		}
 		else {
-			let title = this.props.children
+			const title = this.props.children
 						   ? (<span className='title'>{this.props.children}</span>)
 							: ''
 
 			let missed=''
 			if (this.state.missed) {
 //				missed=(<Missed x={this.state.missed.x} y={this.state.missed.y} />)
-				missed=(<div className='missed' style={{left:this.state.missed.x, top:this.state.missed.y}}>Missed!</div>)
+				missed=(<div
+                  className='missed'
+                  style={{left:this.state.missed.x, top:this.state.missed.y}}>
+                    Missed!
+                </div>)
 			}
 			return (
 				<div className='board' onClick={this.onMissedClick}>

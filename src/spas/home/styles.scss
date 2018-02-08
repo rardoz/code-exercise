@@ -10,7 +10,6 @@ body { // No need for scroll bars
 	height: 100px;
 	position: absolute;
 	animation:turn 3s linear infinite normal;
-//	border: black 1px solid;
 }
 
 // Game board (and some things it contains)
@@ -46,7 +45,7 @@ body { // No need for scroll bars
 	animation:turn 1s;
 }
 .score .icon:nth-child(even) {
-	animation: turn 1s reverse; 
+	animation: turn 1s reverse;
 }
 
 .winningBanner {
