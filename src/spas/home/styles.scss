@@ -3,15 +3,6 @@ body { // No need for scroll bars
 	overflow: hidden;
 }
 
-.target
-{
-	fill: pink;
-	width: 100px;
-	height: 100px;
-	position: absolute;
-	animation:turn 3s linear infinite normal;
-}
-
 // Game board (and some things it contains)
 .board {
 	background-color: darkgray;
@@ -29,23 +20,6 @@ body { // No need for scroll bars
 
 .board .title {
 	font-family: monospace;
-}
-
-.score {
-	display: block;
-}
-.score::before {
-	content: 'Score:';		// Rather than hard-coding in code. FWIW
-	padding-right: 5px;
-}
-
-.score .icon {
-	display: inline-block;
-	color: darken(gold,.15);
-	animation:turn 1s;
-}
-.score .icon:nth-child(even) {
-	animation: turn 1s reverse;
 }
 
 .winningBanner {
