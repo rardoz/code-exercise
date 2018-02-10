@@ -1,6 +1,48 @@
-/* PUT STYLES HERE */
 
-svg {
-    width: 100px;
-    height: 100px;
+body { // No need for scroll bars
+	overflow: hidden;
+}
+
+// Game board (and some things it contains)
+.board {
+	background-color: darkgray;
+	color: blue;
+	font-size: larger;
+	font-weight: bold;
+
+	padding: 20px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+.board .title {
+	font-family: monospace;
+}
+
+.winningBanner {
+	font-family: 'Helvetica',sans-serif;
+	font-size: 55pt;
+	font-weight: bold;
+	color: green;
+//	transform: translate(-500px,-300px) rotate(30deg);
+}
+
+.missed {
+	font-family: 'Helvetica',sans-serif;
+	color:red;
+	position: absolute;
+	opacity: 0;
+	transition: opacity 1s;
+}
+.missed:hover {
+	opacity: 1;
+	transition-duration: 0s;
+}
+
+@keyframes turn {
+  from { transform:rotate(0deg); }
+  to   { transform:rotate(360deg); }
 }

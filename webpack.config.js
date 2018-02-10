@@ -1,4 +1,5 @@
 const
+	 CopyFiles = require('copy-webpack-plugin'),
     webpack = require('webpack'),
     glob = require('glob'),
     ENV = process.env.NODE_ENV || 'development',
@@ -82,6 +83,9 @@ module.exports = {
       plugins: [
         new webpack.HotModuleReplacementPlugin(),
         new webpack.optimize.OccurrenceOrderPlugin(),
+		  new CopyFiles([
+			  {from: 'src/spas/home/index.html', to: 'index.html'}
+		  ]),
         new ExtractTextPlugin('[name]/styles.css'),
         new HappyPack({
           cacheContext: {
@@ -128,7 +132,7 @@ module.exports = {
         })
       ]
     }
-    
+
     if (ENV === 'production') {
 
       module.exports.plugins.push(

@@ -1,0 +1,16 @@
+.score {
+	display: block;
+}
+.score::before {
+	content: 'Score:';		// Rather than hard-coding in code. FWIW
+	padding-right: 5px;
+}
+
+.score .icon {
+	display: inline-block;
+	color: darken(gold,.15);
+	animation:turn 1s;
+}
+.score .icon:nth-child(even) {
+	animation: turn 1s reverse;
+}
