@@ -1,5 +1,5 @@
 import React, {Component, PureComponent} from 'react'
-import './home.font'
+import './Score.font'
 import './Score.css'
 
 /**
