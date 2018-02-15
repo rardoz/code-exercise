@@ -1,39 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
+import Icon from '../../github.svg';
+// import Hidden from '../Hidden/Hidden';
 
-class GithubKitty extends Component {
+const GithubKitty = ({x, y, w, h, hidden, ...props}) => {
 
-  render () {
-    // return (
-    {/*<Icon width={this.props.width} height={this.props.height} />*/}
-    // );
-    // {/*<image ref={this.props.svgRef}>*/}
-    // </image>
-    return (
-      <img ref={this.props.svgRef}
-           src="http://localhost:5000/github.svg"
-           style={{display: 'none', width: this.props.width, height: this.props.height}}
-           onClick={() => window.alert('hi')}
-      />
-    );
-  }
-}
+  if (hidden) return null;
 
+  const style = {
+    display: 'block',
+    position: 'absolute',
+    width: w,
+    height: h,
+  };
+
+  return (
+    <div style={{...style, left: x, top: y}} {...props}>
+      <Icon width={w} height={h} />
+    </div>
+  );
+
+};
+
+// export default Hidden(GithubKitty);
 export default GithubKitty;
-
-// createScoreBoard () {
-//   const beers = [];
-//   for (let i = 0; i < this.state.count; i++) {
-//     beers.push(
-//       <span className="icon icon-beer" />
-//     );
-//   }
-//   return beers;
-// };
-//
-// incrementScore () {
-//   if (this.state.count >= 10) {
-//     this.setState({isWinner: true});
-//   } else {
-//     this.setState({count: this.state.count + 1});
-//   }
-// };
