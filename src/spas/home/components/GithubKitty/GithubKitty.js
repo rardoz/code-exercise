@@ -9,6 +9,7 @@ const GithubKitty = ({x, y, w, h, hidden, ...props}) => {
   const style = {
     display: 'block',
     position: 'absolute',
+    cursor: 'pointer',
     width: w,
     height: h,
   };
