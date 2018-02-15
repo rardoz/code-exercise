@@ -1,41 +1,58 @@
 import React, { Component } from 'react';
-// import GithubKitty from '../GithubKitty/GithubKitty';
-import GithubKitty from '../../github.svg';
-
-const Ball = ({x, y}) => (
-  <div style={{
-    display: 'block',
-    position: 'absolute',
-    width: 20,
-    height: 20,
-    left: x,
-    top: y
-  }}>
-    <GithubKitty width={20} height={20} />
-  </div>
-);
+import GithubKitty from '../GithubKitty/GithubKitty';
+import ScoreBoard from '../ScoreBoard/ScoreBoard';
+import ResetButton from '../ResetButton/ResetButton';
+import {
+  BOARD_HEIGHT,
+  BOARD_WIDTH,
+  DRAW_RATE,
+  ICON_HEIGHT,
+  ICON_WIDTH,
+  ICON_X_INITIAL,
+  ICON_Y_INITIAL,
+  SCORE_INCREMENT,
+  SCORE_INITIAL,
+  SCORE_WINNING,
+  SPEED_INCREMENT,
+  SPEED_INITIAL
+} from './constants';
 
 class GameBoard extends Component {
 
-  constructor (props) {
-    super(props);
-    this.state = {
-      isWinner: false,
-      count: 0,
-      angle: GameBoard.getRandomIntInclusive(10, 80),
-      speed: 5,
-      radians: 0,
-      x: 0,
-      y: 0,
-      ball: {
-        x: 20,
-        y: 20,
-      }
-    };
+  state = {
+    isWinner: false,
+    score: SCORE_INITIAL,
+    w: ICON_WIDTH,
+    h: ICON_HEIGHT,
+    speed: SPEED_INITIAL,
+    dx: 0,
+    dy: 0,
+    x: ICON_X_INITIAL,
+    y: ICON_Y_INITIAL,
+    drawInterval: null
+  };
 
-    this.updateBall = this.updateBall.bind(this);
-    this.updateAngle = this.updateAngle.bind(this);
-    this.drawIcon = this.drawIcon.bind(this);
+  style = {
+    width: BOARD_WIDTH,
+    height: BOARD_HEIGHT,
+    backgroundColor: 'rgba(0, 0, 255, 0.2)'
+  };
+
+  componentDidMount () {
+    window.addEventListener('resize', this.handleWindowResize);
+    this.updateBoundingCoords();
+    this.initializeGame();
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('resize', this.handleWindowResize);
+    clearInterval(this.drawInterval);
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (this.state.score >= SCORE_WINNING && !prevState.isWinner) {
+      this.setState({isWinner: true}, clearInterval(this.drawInterval));
+    }
   }
 
   static getRandomIntInclusive (min, max) {
@@ -44,99 +61,80 @@ class GameBoard extends Component {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  componentDidMount () {
-    const self = this;
-    this.updateBall(this.state.angle);
-    setInterval(self.drawIcon, 33);
-  }
+  initializeGame = () => {
+    console.log('init');
+    this.updateSpeed(GameBoard.getRandomIntInclusive(0, 360));
+    this.drawInterval = setInterval(this.drawIcon, DRAW_RATE);
+  };
 
-  updateBall (angle) {
-    const radians = angle * Math.PI / 180;
-    const x = Math.cos(radians) * this.state.speed;
-    const y = Math.sin(radians) * this.state.speed;
-    this.setState({angle, radians, x, y});
-  }
-
-  handleClick (e) {
-    // const coords = this.canvas.relMouseCoords(event);
-    // console.log(coords.x, coords.y);
-  }
-
-  drawIcon () {
-    const self = this;
-    // const context = this.canvas.getContext('2d');
-
-    // context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    // context.drawImage(this.svg, this.ball.x, this.ball.y, 20, 20);
-
-    // context.fillStyle = '#EEEEEE';
-    // context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    // context.strokeStyle = '#000000';
-    // context.strokeRect(1, 1, this.canvas.width - 2, this.canvas.height - 2);
-    //
+  updateBoundingCoords = () => {
+    const {x, y, width, height} = this.canvas.getBoundingClientRect();
     this.setState({
-      ball: {
-        x: this.state.ball.x + this.state.x,
-        y: this.state.ball.y + this.state.y
-      }
-    }, self.updateAngle);
-    // this.ball.x += this.state.x;
-    // this.ball.y += this.state.y;
-    //
-    // context.fillStyle = '#000000';
-    // context.beginPath();
-    // context.arc(this.ball.x, this.ball.y, this.ball.r, 0, Math.PI * 2, true);
-    // context.closePath();
-    // context.fill();
-    //
+      boardX1: x,
+      boardY1: y,
+      boardX2: width - x,
+      boardY2: height - y,
+    });
+  };
 
-  }
+  updateSpeed = (angle = this.state.angle) => {
+    const radians = angle * Math.PI / 180;
+    this.setState({
+      angle,
+      dx: Math.cos(radians) * this.state.speed,
+      dy: Math.sin(radians) * this.state.speed
+    });
+  };
 
-  updateAngle () {
-    const w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+  drawIcon = () => {
+    this.setState({
+      x: this.state.x + this.state.dx,
+      y: this.state.y + this.state.dy
+    }, this.updateAngle);
+  };
 
-    console.log(this.state.ball, w);
-
-    if (this.state.ball.x + 20 > w || this.state.ball.x - 20 < 0) {
-      console.log('too big x');
+  updateAngle = () => {
+    if (this.state.x < this.state.boardX1 || (this.state.x + this.state.w) > this.state.boardX2) {
       let angle = 180 - this.state.angle;
-      this.updateBall(angle);
-    } else if (this.state.ball.y + 20 > h || this.state.ball.y - 20 < 0) {
-      console.log('too big y');
+      this.updateSpeed(angle);
+    } else if (this.state.y < this.state.boardY1 || (this.state.y + this.state.h) > this.state.boardY2) {
       let angle = 360 - this.state.angle;
-      this.updateBall(angle);
+      this.updateSpeed(angle);
     }
-  }
+  };
+
+  handleReset = () => {
+    this.setState({
+      speed: SPEED_INITIAL,
+      score: SCORE_INITIAL,
+      isWinner: false,
+    }, this.initializeGame);
+  };
+
+  handleIncrementScore = () => {
+    this.setState({
+      speed: this.state.speed + SPEED_INCREMENT,
+      score: this.state.score + SCORE_INCREMENT,
+    }, this.updateSpeed);
+  };
+
+  handleWindowResize = () => {
+    this.updateBoundingCoords();
+  };
 
   render () {
     return (
-      <main>
-        {/*<canvas width={500} height={500}*/}
-        {/*ref={(el) => { this.canvas = el; }}*/}
-        {/*onClick={this.handleClick.bind(this)}*/}
-        {/*/>*/}
-        <Ball x={this.state.ball.x} y={this.state.ball.y} />
-        {/*<GithubKitty width={this.ball.x} height={this.ball.y} svgRef={(el) => { this.svg = el; }} />*/}
+      <main ref={(el) => this.canvas = el} style={this.style}>
+        <ScoreBoard score={this.state.score} />
+        <ResetButton hidden={!this.state.isWinner}
+                     onClick={this.handleReset} />
+        <GithubKitty hidden={this.state.isWinner}
+                     w={this.state.w} h={this.state.h} x={this.state.x} y={this.state.y}
+                     onClick={this.handleIncrementScore} />
       </main>
     );
 
   }
-
-  // render () {
-  //   return (
-  //     <div>
-  //       {this.createScoreBoard()}
-  //       <span className="icon icon-beer" />
-  //       <canvas id="myCanvas" width="100vw" height="100vh" />
-  //       {this.state.isWinner
-  //         ? <div>Congrats!</div>
-  //         : <GithubKitty onClick={this.incrementScore.bind(this)} />}
-  //
-  //     </div>
-  //   );
-  // }
-
 }
 
 export default GameBoard;
