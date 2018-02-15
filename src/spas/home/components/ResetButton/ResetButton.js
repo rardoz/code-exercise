@@ -1,4 +1,5 @@
 import React from 'react';
+// import Hidden from '../Hidden/Hidden';
 
 const ResetButton = ({hidden, ...props}) => {
 
@@ -10,4 +11,5 @@ const ResetButton = ({hidden, ...props}) => {
 
 };
 
+// export default Hidden(ResetButton);
 export default ResetButton;
