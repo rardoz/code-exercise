@@ -35,6 +35,7 @@ class GameBoard extends Component {
   style = {
     width: BOARD_WIDTH,
     height: BOARD_HEIGHT,
+    border: '1px solid rgb(0, 0, 255)',
     backgroundColor: 'rgba(0, 0, 255, 0.2)'
   };
 
