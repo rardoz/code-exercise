@@ -11,8 +11,6 @@ const defaultIconStyles = {
 
 const GithubKitty = ({x, y, w, h, s, hidden, onClick}) => {
 
-  if (hidden) return null;
-
   const style = {
     width: w,
     height: h,

@@ -1,8 +1,6 @@
 import React from 'react';
 
-const ResetButton = ({hidden, onClick, grid}) => {
-
-  if (hidden) return null;
+const ResetButton = ({onClick, grid}) => {
 
   return (
     <div style={grid}>
