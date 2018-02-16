@@ -7,13 +7,20 @@
   overflow: hidden;
 }
 
-body {
+body, #react-spa {
   @extend %full-viewport;
 }
 
-#react-spa {
+main {
   @extend %full-viewport;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.score {
+  opacity: 0.2;
+  &.active {
+    opacity: 1;
+  }
 }
