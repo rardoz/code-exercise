@@ -74,6 +74,10 @@ module.exports = {
         {
           test: /(\.scss|\.css)$/,
           use: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'happypack/loader?id=sass' })
+        },
+        {
+          test: /(\.mp3|\.wav)/,
+          loaders: ['file-loader'],
         }]
       },
       resolve: {
@@ -128,7 +132,7 @@ module.exports = {
         })
       ]
     }
-    
+
     if (ENV === 'production') {
 
       module.exports.plugins.push(
