@@ -76,8 +76,12 @@ module.exports = {
           use: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'happypack/loader?id=sass' })
         },
         {
-          test: /(\.mp3|\.wav)/,
-          loaders: ['file-loader'],
+          test: /(\.mp3|\.wav)$/,
+          loaders: 'file-loader',
+          options: {
+            regExp: /\/(?:.*\/src\/spas\/)(.*?\/)(.*)$/,
+            name: '[1][name].[ext]'
+          }
         }]
       },
       resolve: {
