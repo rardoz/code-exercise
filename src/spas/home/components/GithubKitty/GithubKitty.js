@@ -2,25 +2,19 @@ import React from 'react';
 import Icon from '../../github.svg';
 import withHidden from '../withHidden/withHidden';
 
-const defaultIconStyles = {
-  animation: 'spin infinite 20s linear',
-  display: 'block',
-  position: 'absolute',
-  cursor: 'pointer',
-};
+const GithubKitty = ({x, y, w, h, s, style, onClick}) => {
 
-const GithubKitty = ({x, y, w, h, s, hidden, onClick}) => {
-
-  const style = {
+  const _style = {
+    ...style,
+    animation: `animate-spin infinite 20s linear, animate-color infinite ${3 / s}s linear`,
     width: w,
     height: h,
-    ...defaultIconStyles
+    left: x,
+    top: y
   };
 
   return (
-    <div style={{...style, left: x, top: y}}>
-      <Icon width={w} height={h} onClick={onClick} />
-    </div>
+    <Icon style={_style} width={w} height={h} onClick={onClick} />
   );
 
 };

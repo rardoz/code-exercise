@@ -7,6 +7,7 @@ import GithubKitty from '../../components/GithubKitty/GithubKitty';
 import { RESIZE_RATE } from './constants';
 import _ from 'lodash/function';
 import Footer from '../../components/Footer/Footer';
+import Main from '../../components/Main/Main';
 
 class GameLayout extends Component {
 
@@ -118,23 +119,19 @@ class GameLayout extends Component {
 
   render () {
     return (
-      <main style={{
-        display: 'grid',
-        padding: '1rem',
-        gridTemplateAreas: '"score reset" "canvas canvas" "footer footer"',
-        gridTemplateRows: '1fr 8fr 1fr',
-        gridTemplateColumns: '1fr 1fr',
-        gridRowGap: '1rem'
-      }}>
+      <Main style={style.Main}>
 
-        <ScoreBoard grid={{gridArea: 'score'}} score={this.state.score} total={this.Game.scoreWinning} />
-        <ResetButton grid={{gridArea: 'reset'}} onClick={this.handleReset} />
+        <ScoreBoard style={style.ScoreBoard} score={this.state.score} total={this.Game.scoreWinning} />
 
-        <GameCanvas grid={{gridArea: 'canvas'}} canvasRef={(el) => this.canvas = el}
+        <ResetButton style={style.ResetButton} onClick={this.handleReset} />
+
+        <GameCanvas style={style.GameCanvas}
+                    canvasRef={(el) => this.canvas = el}
                     w={this.Game.boardWidth}
                     h={this.Game.boardHeight}>
 
-          <GithubKitty hidden={this.state.isWinner}
+          <GithubKitty style={style.GithubKitty}
+                       hidden={this.state.isWinner}
                        w={this.Game.iconWidth}
                        h={this.Game.iconHeight}
                        x={this.state.x}
@@ -143,11 +140,47 @@ class GameLayout extends Component {
                        onClick={this.handleIncrementScore} />
         </GameCanvas>
 
-        <Footer grid={{gridArea: 'score'}} />
+        <Footer style={style.Footer} />
 
-      </main>
+      </Main>
     );
   }
 }
+
+// Style
+const style = {
+  Main: {
+    display: 'grid',
+    padding: '0 2rem',
+    gridTemplateAreas: '"score reset" "canvas canvas" "footer footer"',
+    gridTemplateRows: '1fr 8fr 1fr',
+    gridTemplateColumns: '1fr 1fr',
+    gridRowGap: '1rem',
+    margin: '0 auto',
+    maxWidth: '112.0rem',
+    width: '100%',
+    alignItems: 'end'
+  },
+  ScoreBoard: {
+    gridArea: 'score',
+  },
+  ResetButton: {
+    gridArea: 'reset',
+    textAlign: 'right',
+  },
+  GameCanvas: {
+    gridArea: 'canvas',
+    border: '1px solid rgb(0, 0, 255)',
+    backgroundColor: 'rgba(0, 0, 255, 0.2)',
+  },
+  GithubKitty: {
+    display: 'block',
+    position: 'absolute',
+    cursor: 'pointer',
+  },
+  Footer: {
+    gridArea: 'footer'
+  },
+};
 
 export default GameLayout;

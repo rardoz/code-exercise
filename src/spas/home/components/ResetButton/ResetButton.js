@@ -1,13 +1,11 @@
 import React from 'react';
 
-const ResetButton = ({onClick, grid}) => {
-
+const ResetButton = ({onClick, style}) => {
   return (
-    <div style={grid}>
+    <div style={style}>
       <button onClick={onClick}>Reset</button>
     </div>
   );
-
 };
 
 export default ResetButton;

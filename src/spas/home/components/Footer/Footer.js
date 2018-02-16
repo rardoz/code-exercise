@@ -1,13 +1,9 @@
 import React from 'react';
 
-const Footer = ({grid}) => {
-
+const Footer = ({style}) => {
   return (
-    <footer>
-      © 2018 Zipwhip
-    </footer>
+    <footer style={style}>© 2018 Zipwhip</footer>
   );
-
 };
 
 export default Footer;
