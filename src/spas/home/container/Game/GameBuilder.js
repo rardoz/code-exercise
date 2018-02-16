@@ -10,7 +10,7 @@ class Game {
   static DEFAULT_SCORE_INCREMENT = 1;
   static DEFAULT_SCORE_WINNING = 10;
   // Speed
-  static DEFAULT_SPEED_INITIAL = 5;
+  static DEFAULT_SPEED_INITIAL = 1;
   static DEFAULT_SPEED_INCREMENT = 0.75;
 
   constructor (build) {
