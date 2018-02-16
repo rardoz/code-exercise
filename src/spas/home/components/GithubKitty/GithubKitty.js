@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from '../../github.svg';
-// import Hidden from '../Hidden/Hidden';
+import withHidden from '../withHidden/withHidden';
 
 const defaultIconStyles = {
   animation: 'spin infinite 20s linear',
@@ -27,5 +27,4 @@ const GithubKitty = ({x, y, w, h, s, hidden, onClick}) => {
 
 };
 
-// export default Hidden(GithubKitty);
-export default GithubKitty;
+export default withHidden(GithubKitty);
