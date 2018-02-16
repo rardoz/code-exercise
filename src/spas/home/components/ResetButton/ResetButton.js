@@ -1,12 +1,14 @@
 import React from 'react';
 // import Hidden from '../Hidden/Hidden';
 
-const ResetButton = ({hidden, ...props}) => {
+const ResetButton = ({hidden, onClick, grid}) => {
 
   if (hidden) return null;
 
   return (
-    <button {...props}>Reset</button>
+    <div style={grid}>
+      <button onClick={onClick}>Reset</button>
+    </div>
   );
 
 };
