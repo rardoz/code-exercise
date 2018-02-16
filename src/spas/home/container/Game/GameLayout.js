@@ -8,6 +8,8 @@ import { DRAW_RATE, RESIZE_RATE } from './constants';
 import _ from 'lodash/function';
 import Footer from '../../components/Footer/Footer';
 import Main from '../../components/Main/Main';
+import score from '../../sounds/score.mp3';
+import miss from '../../sounds/miss.mp3';
 
 class GameLayout extends Component {
 
@@ -31,7 +33,8 @@ class GameLayout extends Component {
       drawInterval: null,
     };
 
-    this.handleWindowResize = _.debounce(this.handleWindowResize, RESIZE_RATE);
+    this.handleWindowResize = _.throttle(this.handleWindowResize, RESIZE_RATE);
+    // this.handleWindowResize = _.debounce(this.handleWindowResize, RESIZE_RATE);
   }
 
   componentDidMount () {
@@ -109,13 +112,34 @@ class GameLayout extends Component {
   };
 
   ////////////////////////
+  // Sound Handlers
+  ////////////////////////
+  playMissSound = () => {
+    this.audioMiss.currentTime = 0;
+    this.audioMiss.play();
+  };
+
+  playScoreSound = () => {
+    this.audioScore.currentTime = 0;
+    this.audioScore.play();
+  };
+
+  ////////////////////////
   // Event Handlers
   ////////////////////////
   handleReset = () => {
     this.initializeBoard(this.initialGameState, true);
   };
 
-  handleIncrementScore = () => {
+  handleCanvasClick = () => {
+    this.playMissSound();
+  };
+
+  handleIncrementScore = (e) => {
+    e.stopPropagation(); // prevent default `miss` sound from playing
+
+    this.playScoreSound();
+
     this.setState(({speed, score}) => {
       return {
         speed: speed + this.Game.speedIncrement,
@@ -135,14 +159,19 @@ class GameLayout extends Component {
     return (
       <Main style={style.Main}>
 
+        {/* Audio */}
+        <audio ref={(el) => this.audioScore = el} src={score} />
+        <audio ref={(el) => this.audioMiss = el} src={miss} />
+
         <ScoreBoard style={style.ScoreBoard} score={this.state.score} total={this.Game.scoreWinning} />
 
-        <ResetButton style={style.ResetButton} onClick={this.handleReset} />
+        <ResetButton style={style.ResetButton} handleReset={this.handleReset} />
 
         <GameCanvas style={style.GameCanvas}
                     canvasRef={(el) => this.canvas = el}
                     w={this.Game.boardWidth}
-                    h={this.Game.boardHeight}>
+                    h={this.Game.boardHeight}
+                    handleCanvasClick={this.handleCanvasClick}>
 
           <GithubKitty style={style.GithubKitty}
                        hidden={this.state.isWinner}
@@ -151,7 +180,7 @@ class GameLayout extends Component {
                        x={this.state.x}
                        y={this.state.y}
                        s={this.state.speed}
-                       onClick={this.handleIncrementScore} />
+                       handleIncrementScore={this.handleIncrementScore} />
         </GameCanvas>
 
         <Footer style={style.Footer} />
@@ -173,7 +202,9 @@ const style = {
     margin: '0 auto',
     maxWidth: '112.0rem',
     height: '100%',
-    alignItems: 'end'
+    alignItems: 'end',
+    pointerEvents: 'none',
+    userSelect: 'none',
   },
   ScoreBoard: {
     gridArea: 'score',
@@ -181,11 +212,13 @@ const style = {
   ResetButton: {
     gridArea: 'reset',
     textAlign: 'right',
+    pointerEvents: 'auto',
   },
   GameCanvas: {
     gridArea: 'canvas',
     border: '1px solid rgb(0, 0, 255)',
     backgroundColor: 'rgba(0, 0, 255, 0.2)',
+    pointerEvents: 'auto',
   },
   GithubKitty: {
     display: 'block',
