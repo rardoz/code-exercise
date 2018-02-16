@@ -7,20 +7,28 @@
   overflow: hidden;
 }
 
-body, #react-spa {
+html {
+  height: 100%;
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+body, #react-spa, main {
   @extend %full-viewport;
 }
 
-main {
-  @extend %full-viewport;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+body {
+  font-family: 'Helvetica Neue', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  font-size: 1.8em;
+  font-weight: 300;
 }
 
 .score {
   opacity: 0.2;
-  &.active {
-    opacity: 1;
-  }
+  &.active { opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
