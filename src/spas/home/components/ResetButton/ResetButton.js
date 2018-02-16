@@ -1,9 +1,9 @@
 import React from 'react';
 
-const ResetButton = ({onClick, style}) => {
+const ResetButton = ({style, handleReset}) => {
   return (
     <div style={style}>
-      <button onClick={onClick}>Reset</button>
+      <button onClick={handleReset}>Reset</button>
     </div>
   );
 };
