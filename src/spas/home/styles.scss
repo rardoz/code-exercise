@@ -13,7 +13,7 @@ html {
   font-size: 62.5%;
 }
 
-body, #react-spa, main {
+body, #react-spa {
   @extend %full-viewport;
 }
 
