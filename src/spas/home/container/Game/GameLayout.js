@@ -4,7 +4,7 @@ import ScoreBoard from '../../components/ScoreBoard/ScoreBoard';
 import ResetButton from '../../components/ResetButton/ResetButton';
 import GameCanvas from './GameCanvas';
 import GithubKitty from '../../components/GithubKitty/GithubKitty';
-import { RESIZE_RATE } from './constants';
+import { DRAW_RATE, RESIZE_RATE } from './constants';
 import _ from 'lodash/function';
 import Footer from '../../components/Footer/Footer';
 import Main from '../../components/Main/Main';
@@ -17,6 +17,10 @@ class GameLayout extends Component {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  static normalizeCoord (val, lowerBound, upperBound) {
+    return Math.min(Math.max(val, lowerBound), upperBound);
+  }
+
   constructor (props) {
     super(props);
 
@@ -24,23 +28,20 @@ class GameLayout extends Component {
     console.debug('Game settings:', this.Game);
 
     this.state = {
-      isWinner: false,
-      score: this.Game.scoreInitial,
-      speed: this.Game.speedInitial,
-      drawInterval: null
+      drawInterval: null,
     };
 
     this.handleWindowResize = _.debounce(this.handleWindowResize, RESIZE_RATE);
   }
 
   componentDidMount () {
-    window.addEventListener('resize', this.Game.handleWindowResize);
-    this.updateBoundingCoords(this.initializeGame);
+    window.addEventListener('resize', this.handleWindowResize);
+    this.initializeBoard(this.initialGameState, true);
   }
 
   componentWillUnmount () {
     window.removeEventListener('resize', this.handleWindowResize);
-    this.clearInterval();
+    clearInterval(this.drawInterval);
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -49,74 +50,87 @@ class GameLayout extends Component {
     }
   }
 
-  initializeGame = () => {
-    console.debug('init', this.state, this.Game);
-    this.updateSpeed(GameLayout.getRandomIntInclusive(0, 360));
-    this.clearInterval();
-    this.drawInterval = setInterval(this.drawIcon, 33);
+  get initialGameState () {
+    return {
+      isWinner: false,
+      score: this.Game.scoreInitial,
+      speed: this.Game.speedInitial,
+      angle: GameLayout.getRandomIntInclusive(0, 360),
+    };
   };
 
-  clearInterval = () => {
-    clearInterval(this.drawInterval);
-  };
-
-  updateBoundingCoords = (cb) => {
+  initializeBoard = (initialState = {}, hardReset = false) => {
     const {x, y, width, height} = this.canvas.getBoundingClientRect();
-    this.setState({
-      x: x + (width / 2),
-      y: y + (height / 2),
-      boardX1: x,
-      boardY1: y,
-      boardX2: width + x,
-      boardY2: height + y,
-    }, cb);
-  };
 
-  updateSpeed = (angle = this.state.angle) => {
-    const radians = angle * Math.PI / 180;
-    this.setState({
-      angle,
-      dx: Math.cos(radians) * this.state.speed,
-      dy: Math.sin(radians) * this.state.speed
+    const board = {
+      boardLeft: x,
+      boardTop: y,
+      boardRight: width + x - this.Game.iconWidth,
+      boardBottom: height + y - this.Game.iconHeight,
+    };
+
+    this.startGame({
+      x: hardReset ? x + (width / 2) : GameLayout.normalizeCoord(this.state.x, board.boardLeft, board.boardRight),
+      y: hardReset ? y + (height / 2) : GameLayout.normalizeCoord(this.state.y, board.boardTop, board.boardBottom),
+      dx: 0,
+      dy: 0,
+      ...board,
+      ...initialState
     });
   };
 
+  startGame = (initialState = {}) => {
+    this.setState(initialState, this.drawIcon);
+  };
+
   drawIcon = () => {
-    this.setState({
-      x: this.state.x + this.state.dx,
-      y: this.state.y + this.state.dy
-    }, this.updateAngle);
+    clearInterval(this.drawInterval);
+
+    const _drawIcon = () => {
+      let angle = this.state.angle;
+      const x = this.state.x + this.state.dx;
+      const y = this.state.y + this.state.dy;
+
+      if (x < this.state.boardLeft || x > this.state.boardRight) {
+        angle = 180 - angle;
+      } else if (y < this.state.boardTop || y > this.state.boardBottom) {
+        angle = 360 - angle;
+      }
+      this.setState(({speed, radians = angle * Math.PI / 180}) => {
+        return {
+          x, y, angle,
+          dx: Math.cos(radians) * speed,
+          dy: Math.sin(radians) * speed
+        };
+      });
+    };
+
+    this.drawInterval = setInterval(_drawIcon, DRAW_RATE);
   };
 
-  updateAngle = () => {
-    if (this.state.x < this.state.boardX1 || (this.state.x + this.Game.iconWidth) > this.state.boardX2) {
-      let angle = 180 - this.state.angle;
-      this.updateSpeed(angle);
-    } else if (this.state.y < this.state.boardY1 || (this.state.y + this.Game.iconHeight) > this.state.boardY2) {
-      let angle = 360 - this.state.angle;
-      this.updateSpeed(angle);
-    }
-  };
-
+  ////////////////////////
+  // Event Handlers
+  ////////////////////////
   handleReset = () => {
-    this.setState({
-      speed: this.Game.speedInitial,
-      score: this.Game.scoreInitial,
-      isWinner: false,
-    }, this.initializeGame);
+    this.initializeBoard(this.initialGameState, true);
   };
 
   handleIncrementScore = () => {
-    this.setState({
-      speed: this.state.speed + this.Game.speedIncrement,
-      score: this.state.score + this.Game.scoreIncrement,
-    }, this.updateSpeed);
+    this.setState(({speed, score}) => {
+      return {
+        speed: speed + this.Game.speedIncrement,
+        score: score + this.Game.scoreIncrement,
+      };
+    });
   };
 
   handleWindowResize = () => {
-    this.updateBoundingCoords();
+    this.initializeBoard();
   };
 
+  ////////////////////////
+  // Render
+  ////////////////////////
   render () {
     return (
       <Main style={style.Main}>
@@ -158,7 +172,7 @@ const style = {
     gridRowGap: '1rem',
     margin: '0 auto',
     maxWidth: '112.0rem',
-    width: '100%',
+    height: '100%',
     alignItems: 'end'
   },
   ScoreBoard: {
@@ -179,7 +193,8 @@ const style = {
     cursor: 'pointer',
   },
   Footer: {
-    gridArea: 'footer'
+    gridArea: 'footer',
+    alignSelf: 'center',
   },
 };
 
