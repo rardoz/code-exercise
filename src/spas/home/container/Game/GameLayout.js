@@ -27,7 +27,8 @@ class GameLayout extends Component {
     super(props);
 
     this.Game = new GameBuilder().build();
-    console.debug('Game settings:', this.Game);
+    this.audioScore = new Audio(score);
+    this.audioMiss = new Audio(miss);
 
     this.state = {
       drawInterval: null,
@@ -158,10 +159,6 @@ class GameLayout extends Component {
   render () {
     return (
       <Main style={style.Main}>
-
-        {/* Audio */}
-        <audio ref={(el) => this.audioScore = el} src={score} />
-        <audio ref={(el) => this.audioMiss = el} src={miss} />
 
         <ScoreBoard style={style.ScoreBoard} score={this.state.score} total={this.Game.scoreWinning} />
 
