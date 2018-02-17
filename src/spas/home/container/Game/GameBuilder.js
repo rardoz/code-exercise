@@ -28,26 +28,26 @@ class Game {
 
 export class GameBuilder {
 
-  withBoard (width, height) {
+  withBoard ({width, height}) {
     this.boardWidth = width;
     this.boardHeight = height;
     return this;
   }
 
-  withIcon (width, height) {
+  withIcon ({width, height}) {
     this.iconWidth = width;
     this.iconHeight = height;
     return this;
   }
 
-  withScore (initial, increment, winning) {
+  withScore ({initial, increment, winning}) {
     this.scoreInitial = initial;
     this.scoreIncrement = increment;
     this.scoreWinning = winning;
     return this;
   }
 
-  withSpeed (initial, increment) {
+  withSpeed ({initial, increment}) {
     this.speedInitial = initial;
     this.speedIncrement = increment;
     return this;
