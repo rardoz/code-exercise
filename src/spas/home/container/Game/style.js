@@ -10,9 +10,9 @@ const style = {
     Grid: {
       display: 'grid',
       padding: '0 2rem',
-      gridTemplateAreas: '"score clicks reset" "canvas canvas canvas" "footer footer footer"',
+      gridTemplateAreas: '"level clicks score reset" "canvas canvas canvas canvas" "footer footer footer footer"',
       gridTemplateRows: '1fr 8fr 1fr',
-      gridTemplateColumns: '1fr 1fr 1fr',
+      gridTemplateColumns: '1fr 1fr 2fr 4fr',
       gridRowGap: '1rem',
       gridColumnGap: '2rem',
       alignItems: 'end',
@@ -22,6 +22,9 @@ const style = {
       maxWidth: '112.0rem',
       height: '100%',
     }
+  },
+  LevelIndicator: {
+    gridArea: 'level',
   },
   ScoreBoard: {
     gridArea: 'score',
