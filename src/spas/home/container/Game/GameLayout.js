@@ -11,11 +11,10 @@ import Main from '../../components/Main/Main';
 import score from '../../assets/score.mp3';
 import miss from '../../assets/miss.mp3';
 import win from '../../assets/win.mp3';
-import canvasBackground from '../../assets/canvas75.png';
-import mainBackground from '../../assets/background.png';
 import StartButton from '../../components/StartButton/StartButton';
 import ClicksBoard from '../../components/ClicksBoard/ClicksBoard';
 import VictoryMessage from '../../components/VictoryMessage/VictoryMessage';
+import style from './style';
 
 class GameLayout extends Component {
 
@@ -239,63 +238,5 @@ class GameLayout extends Component {
     );
   }
 }
-
-// Style
-const style = {
-  Main: {
-    Container: {
-      background: `url(${mainBackground}) repeat`,
-      height: '100%',
-    },
-    Grid: {
-      display: 'grid',
-      padding: '0 2rem',
-      gridTemplateAreas: '"score clicks reset" "canvas canvas canvas" "footer footer footer"',
-      gridTemplateRows: '1fr 8fr 1fr',
-      gridTemplateColumns: '1fr 1fr 2fr',
-      gridRowGap: '1rem',
-      alignItems: 'end',
-      pointerEvents: 'none',
-      userSelect: 'none',
-      margin: '0 auto',
-      maxWidth: '112.0rem',
-      height: '100%',
-    }
-  },
-  ScoreBoard: {
-    gridArea: 'score',
-  },
-  ClicksBoard: {
-    gridArea: 'clicks',
-  },
-  StartButton: {
-    gridArea: 'canvas',
-    textAlign: 'center',
-    alignSelf: 'center',
-    zIndex: 1,
-    pointerEvents: 'auto',
-  },
-  ResetButton: {
-    gridArea: 'reset',
-    textAlign: 'right',
-    pointerEvents: 'auto',
-  },
-  GameCanvas: {
-    gridArea: 'canvas',
-    border: '1px solid rgb(0, 0, 255)',
-    pointerEvents: 'auto',
-    background: `url(${canvasBackground}) no-repeat center center fixed`,
-    backgroundSize: 'cover'
-  },
-  GithubKitty: {
-    display: 'block',
-    position: 'absolute',
-    cursor: 'pointer',
-  },
-  Footer: {
-    gridArea: 'footer',
-    alignSelf: 'center',
-  },
-};
 
 export default GameLayout;
