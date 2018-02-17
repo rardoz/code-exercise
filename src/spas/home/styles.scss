@@ -24,21 +24,43 @@ body {
 }
 
 .score {
-  opacity: 0.2;
-  &.active { opacity: 1; }
+  color: #000;
+  opacity: 0.1;
+  &.active {
+    color: gold;
+    opacity: 1;
+  }
 }
 
 @keyframes animate-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes animate-color {
-  14.28%  {fill: red;}
-  28.57%  {fill: orange;}
-  42.86%  {fill: yellow;}
-  57.14%  {fill: green;}
-  71.43%  {fill: blue;}
-  85.71%  {fill: indigo;}
-  100.0%  {fill: violet;}
+  14.28% {
+    fill: red;
+  }
+  28.57% {
+    fill: orange;
+  }
+  42.86% {
+    fill: yellow;
+  }
+  57.14% {
+    fill: green;
+  }
+  71.43% {
+    fill: blue;
+  }
+  85.71% {
+    fill: indigo;
+  }
+  100.0% {
+    fill: violet;
+  }
 }
