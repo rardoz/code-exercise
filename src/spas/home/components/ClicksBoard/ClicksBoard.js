@@ -3,7 +3,7 @@ import React from 'react';
 const ClicksBoard = ({clicks, style}) => {
   return (
     <section style={style}>
-      # Clicks: <b>{clicks}</b>
+      <nobr># Clicks: <b>{clicks}</b></nobr>
     </section>
   );
 };
