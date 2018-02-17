@@ -126,7 +126,7 @@ class GameLayout extends Component {
 
     this.playWinSound();
 
-    const accuracy = `${this.state.clicks / this.Game.scoreWinning * 100}%`;
+    const accuracy = `${(this.Game.scoreWinning / this.state.clicks * 100).toFixed(2)}%`;
     this.setState({
       isComplete: true,
       victoryMessage: (
