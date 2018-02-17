@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from '../../github.svg';
 import withHidden from '../withHidden/withHidden';
 
-const GithubKitty = ({x, y, w, h, s, style, handleIncrementScore}) => {
+const GithubKitty = ({x, y, w, h, s, style}) => {
 
   const _style = {
     ...style,
@@ -14,7 +14,7 @@ const GithubKitty = ({x, y, w, h, s, style, handleIncrementScore}) => {
   };
 
   return (
-    <Icon style={_style} width={w} height={h} onClick={handleIncrementScore} />
+    <Icon style={_style} width={w} height={h} />
   );
 
 };
