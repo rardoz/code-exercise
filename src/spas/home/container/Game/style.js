@@ -54,6 +54,7 @@ const style = {
   },
   Footer: {
     gridArea: 'footer',
+    textAlign: 'center',
     alignSelf: 'center',
   },
 };
