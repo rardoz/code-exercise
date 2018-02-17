@@ -6,7 +6,7 @@ const GithubKitty = ({x, y, w, h, s, style, handleIncrementScore}) => {
 
   const _style = {
     ...style,
-    animation: `animate-spin infinite 20s linear, animate-color infinite ${3 / s}s linear`,
+    animation: `animate-spin infinite 20s linear, animate-color infinite ${10 / s}s linear`,
     width: w,
     height: h,
     left: x,
