@@ -4,7 +4,7 @@ import ScoreBoard from '../../components/ScoreBoard/ScoreBoard';
 import ResetButton from '../../components/ResetButton/ResetButton';
 import GameCanvas from './GameCanvas';
 import GithubKitty from '../../components/GithubKitty/GithubKitty';
-import { DRAW_RATE, RESIZE_RATE } from './constants';
+import { DRAW_RATE, RESIZE_RATE, VICTORY_MESSAGE, } from './constants';
 import _ from 'lodash/function';
 import Footer from '../../components/Footer/Footer';
 import Main from '../../components/Main/Main';
@@ -15,6 +15,7 @@ import StartButton from '../../components/StartButton/StartButton';
 import ClicksBoard from '../../components/ClicksBoard/ClicksBoard';
 import VictoryMessage from '../../components/VictoryMessage/VictoryMessage';
 import style from './style';
+import LevelIndicator from '../../components/LevelIndicator/LevelIndicator';
 
 class GameLayout extends Component {
 
@@ -31,13 +32,14 @@ class GameLayout extends Component {
   constructor (props) {
     super(props);
 
-    this.Game = new GameBuilder().build();
     this.audioScore = new Audio(score);
     this.audioMiss = new Audio(miss);
     this.audioWin = new Audio(win);
 
     this.state = {
+      Game: new GameBuilder().build(),
       isComplete: true,
+      level: 1,
       drawInterval: null,
     };
 
@@ -57,7 +59,7 @@ class GameLayout extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (this.state.score >= this.Game.scoreWinning && !prevState.isComplete) {
+    if (this.state.score === this.state.Game.scoreWinning && prevState.score === (this.state.Game.scoreWinning - 1)) {
       this.winnerCelebration(); // Hooray!
     }
   }
@@ -65,8 +67,8 @@ class GameLayout extends Component {
   get initialGameState () {
     return {
       clicks: 0,
-      score: this.Game.scoreInitial,
-      speed: this.Game.speedInitial,
+      score: this.state.Game.scoreInitial,
+      speed: this.state.Game.speedInitial,
       angle: GameLayout.getRandomIntInclusive(0, 360),
       victoryMessage: null,
     };
@@ -78,8 +80,8 @@ class GameLayout extends Component {
     const board = {
       boardLeft: x,
       boardTop: y,
-      boardRight: width + x - this.Game.iconWidth,
-      boardBottom: height + y - this.Game.iconHeight,
+      boardRight: width + x - this.state.Game.iconWidth,
+      boardBottom: height + y - this.state.Game.iconHeight,
     };
 
     this.startGame({
@@ -109,16 +111,24 @@ class GameLayout extends Component {
       } else if (y < this.state.boardTop || y > this.state.boardBottom) {
         angle = 360 - angle;
       }
-      this.setState(({speed, radians = angle * Math.PI / 180}) => {
-        return {
+      this.setState(({speed, radians = angle * Math.PI / 180}) => ({
           x, y, angle,
           dx: Math.cos(radians) * speed,
           dy: Math.sin(radians) * speed
-        };
-      });
+        })
+      );
     };
 
     this.drawInterval = setInterval(_drawIcon, DRAW_RATE);
+  };
+
+  incrementScore = () => {
+    this.playScoreSound();
+
+    this.setState(({speed, score}) => ({
+      speed: speed + this.state.Game.speedIncrement,
+      score: score + this.state.Game.scoreIncrement
+    }));
   };
 
   winnerCelebration = () => {
@@ -126,11 +136,17 @@ class GameLayout extends Component {
 
     this.playWinSound();
 
-    const accuracy = `${(this.Game.scoreWinning / this.state.clicks * 100).toFixed(2)}%`;
+    const accuracy = `${(this.state.Game.scoreWinning / this.state.clicks * 100).toFixed(2)}%`;
+    const level = this.state.level + 1;
+
     this.setState({
+      Game: new GameBuilder()
+        .withSpeed({initial: level})
+        .build(),
       isComplete: true,
+      level,
       victoryMessage: (
-        <VictoryMessage message='Congratulations' accuracy={accuracy} />
+        <VictoryMessage message={VICTORY_MESSAGE} accuracy={accuracy} />
       )
     });
   };
@@ -157,7 +173,7 @@ class GameLayout extends Component {
   // Event Handlers
   ////////////////////////
   handleReset = () => {
-    this.initializeBoard({isComplete: true, ...this.initialGameState}, true);
+    this.initializeBoard({isComplete: true, level: 1, ...this.initialGameState}, true);
   };
 
   handleStart = () => {
@@ -168,24 +184,9 @@ class GameLayout extends Component {
     if (this.state.isComplete) return;
 
     if (this.canvas === e.target) this.playMissSound();
-    else this.playScoreSound();
+    else this.incrementScore();
 
-    this.setState(({clicks}) => {
-      return {
-        clicks: clicks + 1
-      };
-    });
-  };
-
-  handleIncrementScore = () => {
-    // e.stopPropagation(); // prevent default `miss` sound from playing
-
-    this.setState(({speed, score}) => {
-      return {
-        speed: speed + this.Game.speedIncrement,
-        score: score + this.Game.scoreIncrement,
-      };
-    });
+    this.setState(({clicks}) => ({clicks: clicks + 1}));
   };
 
   handleWindowResize = () => {
@@ -199,37 +200,41 @@ class GameLayout extends Component {
     return (
       <Main style={style.Main}>
 
-        <ScoreBoard style={style.ScoreBoard}
-                    score={this.state.score}
-                    clicks={this.state.clicks}
-                    total={this.Game.scoreWinning} />
+        <LevelIndicator style={style.LevelIndicator}
+                        level={this.state.level} />
 
         <ClicksBoard style={style.ClicksBoard}
                      clicks={this.state.clicks} />
+
+        <ScoreBoard style={style.ScoreBoard}
+                    score={this.state.score}
+                    clicks={this.state.clicks}
+                    total={this.state.Game.scoreWinning} />
+
 
         <ResetButton style={style.ResetButton}
                      handleReset={this.handleReset} />
 
         <StartButton style={style.StartButton}
                      hidden={!this.state.isComplete}
+                     level={this.state.level}
                      victoryMessage={this.state.victoryMessage}
                      handleStart={this.handleStart} />
 
         <GameCanvas style={style.GameCanvas}
                     canvasRef={(el) => this.canvas = el}
-                    w={this.Game.boardWidth}
-                    h={this.Game.boardHeight}
+                    w={this.state.Game.boardWidth}
+                    h={this.state.Game.boardHeight}
                     handleCanvasClick={this.handleCanvasClick}>
 
 
           <GithubKitty style={style.GithubKitty}
                        hidden={this.state.isComplete}
-                       w={this.Game.iconWidth}
-                       h={this.Game.iconHeight}
+                       w={this.state.Game.iconWidth}
+                       h={this.state.Game.iconHeight}
                        x={this.state.x}
                        y={this.state.y}
-                       s={this.state.speed}
-                       handleIncrementScore={this.handleIncrementScore} />
+                       s={this.state.speed} />
         </GameCanvas>
 
         <Footer style={style.Footer} />
