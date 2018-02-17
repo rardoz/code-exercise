@@ -8,8 +8,14 @@ import { DRAW_RATE, RESIZE_RATE } from './constants';
 import _ from 'lodash/function';
 import Footer from '../../components/Footer/Footer';
 import Main from '../../components/Main/Main';
-import score from '../../sounds/score.mp3';
-import miss from '../../sounds/miss.mp3';
+import score from '../../assets/score.mp3';
+import miss from '../../assets/miss.mp3';
+import win from '../../assets/win.mp3';
+import canvasBackground from '../../assets/canvas75.png';
+import mainBackground from '../../assets/background.png';
+import StartButton from '../../components/StartButton/StartButton';
+import ClicksBoard from '../../components/ClicksBoard/ClicksBoard';
+import VictoryMessage from '../../components/VictoryMessage/VictoryMessage';
 
 class GameLayout extends Component {
 
@@ -29,11 +35,14 @@ class GameLayout extends Component {
     this.Game = new GameBuilder().build();
     this.audioScore = new Audio(score);
     this.audioMiss = new Audio(miss);
+    this.audioWin = new Audio(win);
 
     this.state = {
+      isComplete: true,
       drawInterval: null,
     };
 
+    // INFO: external lib
     this.handleWindowResize = _.throttle(this.handleWindowResize, RESIZE_RATE);
     // this.handleWindowResize = _.debounce(this.handleWindowResize, RESIZE_RATE);
   }
@@ -49,17 +58,18 @@ class GameLayout extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (this.state.score >= this.Game.scoreWinning && !prevState.isWinner) {
-      this.setState({isWinner: true}, clearInterval(this.drawInterval));
+    if (this.state.score >= this.Game.scoreWinning && !prevState.isComplete) {
+      this.winnerCelebration(); // Hooray!
     }
   }
 
   get initialGameState () {
     return {
-      isWinner: false,
+      clicks: 0,
       score: this.Game.scoreInitial,
       speed: this.Game.speedInitial,
       angle: GameLayout.getRandomIntInclusive(0, 360),
+      victoryMessage: null,
     };
   };
 
@@ -112,6 +122,20 @@ class GameLayout extends Component {
     this.drawInterval = setInterval(_drawIcon, DRAW_RATE);
   };
 
+  winnerCelebration = () => {
+    clearInterval(this.drawInterval);
+
+    this.playWinSound();
+
+    const accuracy = `${this.state.clicks / this.Game.scoreWinning * 100}%`;
+    this.setState({
+      isComplete: true,
+      victoryMessage: (
+        <VictoryMessage message='Congratulations' accuracy={accuracy} />
+      )
+    });
+  };
+
   ////////////////////////
   // Sound Handlers
   ////////////////////////
@@ -125,21 +149,37 @@ class GameLayout extends Component {
     this.audioScore.play();
   };
 
+  playWinSound = () => {
+    this.audioWin.currentTime = 0;
+    this.audioWin.play();
+  };
+
   ////////////////////////
   // Event Handlers
   ////////////////////////
   handleReset = () => {
-    this.initializeBoard(this.initialGameState, true);
+    this.initializeBoard({isComplete: true, ...this.initialGameState}, true);
   };
 
-  handleCanvasClick = () => {
-    this.playMissSound();
+  handleStart = () => {
+    this.initializeBoard({isComplete: false, ...this.initialGameState}, true);
   };
 
-  handleIncrementScore = (e) => {
-    e.stopPropagation(); // prevent default `miss` sound from playing
+  handleCanvasClick = (e) => {
+    if (this.state.isComplete) return;
 
-    this.playScoreSound();
+    if (this.canvas === e.target) this.playMissSound();
+    else this.playScoreSound();
+
+    this.setState(({clicks}) => {
+      return {
+        clicks: clicks + 1
+      };
+    });
+  };
+
+  handleIncrementScore = () => {
+    // e.stopPropagation(); // prevent default `miss` sound from playing
 
     this.setState(({speed, score}) => {
       return {
@@ -160,9 +200,21 @@ class GameLayout extends Component {
     return (
       <Main style={style.Main}>
 
-        <ScoreBoard style={style.ScoreBoard} score={this.state.score} total={this.Game.scoreWinning} />
+        <ScoreBoard style={style.ScoreBoard}
+                    score={this.state.score}
+                    clicks={this.state.clicks}
+                    total={this.Game.scoreWinning} />
 
-        <ResetButton style={style.ResetButton} handleReset={this.handleReset} />
+        <ClicksBoard style={style.ClicksBoard}
+                     clicks={this.state.clicks} />
+
+        <ResetButton style={style.ResetButton}
+                     handleReset={this.handleReset} />
+
+        <StartButton style={style.StartButton}
+                     hidden={!this.state.isComplete}
+                     victoryMessage={this.state.victoryMessage}
+                     handleStart={this.handleStart} />
 
         <GameCanvas style={style.GameCanvas}
                     canvasRef={(el) => this.canvas = el}
@@ -170,8 +222,9 @@ class GameLayout extends Component {
                     h={this.Game.boardHeight}
                     handleCanvasClick={this.handleCanvasClick}>
 
+
           <GithubKitty style={style.GithubKitty}
-                       hidden={this.state.isWinner}
+                       hidden={this.state.isComplete}
                        w={this.Game.iconWidth}
                        h={this.Game.iconHeight}
                        x={this.state.x}
@@ -190,21 +243,37 @@ class GameLayout extends Component {
 // Style
 const style = {
   Main: {
-    display: 'grid',
-    padding: '0 2rem',
-    gridTemplateAreas: '"score reset" "canvas canvas" "footer footer"',
-    gridTemplateRows: '1fr 8fr 1fr',
-    gridTemplateColumns: '1fr 1fr',
-    gridRowGap: '1rem',
-    margin: '0 auto',
-    maxWidth: '112.0rem',
-    height: '100%',
-    alignItems: 'end',
-    pointerEvents: 'none',
-    userSelect: 'none',
+    Container: {
+      background: `url(${mainBackground}) repeat`,
+      height: '100%',
+    },
+    Grid: {
+      display: 'grid',
+      padding: '0 2rem',
+      gridTemplateAreas: '"score clicks reset" "canvas canvas canvas" "footer footer footer"',
+      gridTemplateRows: '1fr 8fr 1fr',
+      gridTemplateColumns: '1fr 1fr 2fr',
+      gridRowGap: '1rem',
+      alignItems: 'end',
+      pointerEvents: 'none',
+      userSelect: 'none',
+      margin: '0 auto',
+      maxWidth: '112.0rem',
+      height: '100%',
+    }
   },
   ScoreBoard: {
     gridArea: 'score',
+  },
+  ClicksBoard: {
+    gridArea: 'clicks',
+  },
+  StartButton: {
+    gridArea: 'canvas',
+    textAlign: 'center',
+    alignSelf: 'center',
+    zIndex: 1,
+    pointerEvents: 'auto',
   },
   ResetButton: {
     gridArea: 'reset',
@@ -214,8 +283,9 @@ const style = {
   GameCanvas: {
     gridArea: 'canvas',
     border: '1px solid rgb(0, 0, 255)',
-    backgroundColor: 'rgba(0, 0, 255, 0.2)',
     pointerEvents: 'auto',
+    background: `url(${canvasBackground}) no-repeat center center fixed`,
+    backgroundSize: 'cover'
   },
   GithubKitty: {
     display: 'block',
