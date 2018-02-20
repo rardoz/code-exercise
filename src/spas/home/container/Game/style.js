@@ -46,7 +46,7 @@ const style = {
   },
   GameCanvas: {
     gridArea: 'canvas',
-    border: '1px solid rgb(0, 0, 255)',
+    border: '1px solid rgb(230, 230, 230)',
     pointerEvents: 'auto',
     background: `url(${canvasBackground}) no-repeat center center fixed`,
     backgroundSize: 'cover'

@@ -10,8 +10,8 @@ class Game {
   static DEFAULT_SCORE_INCREMENT = 1;
   static DEFAULT_SCORE_WINNING = 10;
   // Speed
-  static DEFAULT_SPEED_INITIAL = 1;
-  static DEFAULT_SPEED_INCREMENT = 1;
+  static DEFAULT_SPEED_INITIAL = 0.1;
+  static DEFAULT_SPEED_INCREMENT = 0.1;
 
   constructor (build) {
     this.boardWidth = build.boardWidth || Game.DEFAULT_BOARD_WIDTH;

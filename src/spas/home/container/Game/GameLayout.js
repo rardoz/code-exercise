@@ -137,11 +137,12 @@ class GameLayout extends Component {
     this.playWinSound();
 
     const accuracy = `${(this.state.Game.scoreWinning / this.state.clicks * 100).toFixed(2)}%`;
+    const speed = this.state.level / 10 + 0.1;
     const level = this.state.level + 1;
 
     this.setState({
       Game: new GameBuilder()
-        .withSpeed({initial: level})
+        .withSpeed({initial: speed})
         .build(),
       isComplete: true,
       level,
