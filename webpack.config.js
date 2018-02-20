@@ -74,6 +74,14 @@ module.exports = {
         {
           test: /(\.scss|\.css)$/,
           use: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'happypack/loader?id=sass' })
+        },
+        {
+          test: /(\.mp3|\.wav|\.png)$/,
+          loaders: 'file-loader',
+          options: {
+            regExp: /\/(?:.*\/src\/spas\/)(.*?\/)(.*)$/,
+            name: '[1][name].[ext]'
+          }
         }]
       },
       resolve: {
@@ -128,7 +136,7 @@ module.exports = {
         })
       ]
     }
-    
+
     if (ENV === 'production') {
 
       module.exports.plugins.push(

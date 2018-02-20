@@ -1,6 +1,66 @@
-/* PUT STYLES HERE */
 
-svg {
-    width: 100px;
-    height: 100px;
+%full-viewport {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+body, #react-spa {
+  @extend %full-viewport;
+}
+
+body {
+  font-family: 'Helvetica Neue', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  font-size: 1.7em;
+  font-weight: 300;
+}
+
+.score {
+  color: #000;
+  opacity: 0.1;
+  &.active {
+    color: gold;
+    opacity: 1;
+  }
+}
+
+@keyframes animate-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes animate-color {
+  14.28% {
+    fill: red;
+  }
+  28.57% {
+    fill: orange;
+  }
+  42.86% {
+    fill: yellow;
+  }
+  57.14% {
+    fill: green;
+  }
+  71.43% {
+    fill: blue;
+  }
+  85.71% {
+    fill: indigo;
+  }
+  100.0% {
+    fill: violet;
+  }
 }
